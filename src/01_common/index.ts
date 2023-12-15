@@ -10,9 +10,56 @@ const typeDefs = `#graphql
     count: Int
     author: String
   }
+  
+  type User {
+    name: String!
+  }
 
   type Query {
     books: [Book!]!
+  }
+  
+  type Mutation {
+    addBook(title: String, author: String): Book
+  }
+  
+  input BlogPostContent {
+    title: String
+    body: String
+    media: [MediaDetails!]
+  }
+
+  input MediaDetails {
+    format: MediaFormat!
+    url: String!
+  }
+
+  enum MediaFormat {
+    IMAGE
+    VIDEO
+  }
+  
+  enum AllowedColor {
+    RED
+    GREEN
+    BLUE
+  }
+  
+  type Query {
+    avatar(borderColor: AllowedColor): String
+  }
+  
+  interface MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+  }
+  
+  type UpdateUserEmailMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
   }
 `;
 
@@ -36,8 +83,19 @@ const books = [
 ];
 
 const resolvers = {
+  AllowedColor: {
+    RED: '#f00',
+    GREEN: '#0f0',
+    BLUE: '#00f',
+  },
   Query: {
     books: () => books,
+    avatar: (parent, args) => {
+      console.log({parent});
+      console.log({args});
+
+      return 'Avatar';
+    },
   },
 };
 
